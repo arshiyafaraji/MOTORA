@@ -7,10 +7,10 @@
 - `style.css`
 - `script.js`
 - `logo.png` لوگوی سایت
-- `header.png` تصویر پس‌زمینه هدر اصلی
+- `HEADER.png` تصویر پس‌زمینه هدر اصلی
 
 ## قرار دادن تصاویر
-دو فایل PNG را کنار `index.html` قرار دهید و نام آن‌ها را دقیقاً `Logo.png` و `Header.png` بگذارید.
+دو فایل PNG را کنار `index.html` قرار دهید و نام آن‌ها را دقیقاً `Logo.png` و `HEADER.png` بگذارید.
 
 ## اجرای محلی
 فایل `index.html` را در مرورگر باز کنید یا از Live Server در VS Code استفاده کنید.
