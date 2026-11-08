@@ -1,16 +1,15 @@
 /* ============================================================
-   موتورسواری — script.js
+   موتورسواری — script.js (نسخه نرم)
    ============================================================ */
 (function () {
   "use strict";
 
-  /* ---------- helpers ---------- */
   const $ = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
   const toFa = (n) => String(n).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[d]);
 
   /* ============================================================
-     1. PRELOADER + SPEEDOMETER
+     1. PRELOADER
      ============================================================ */
   const preloader = $("#preloader");
   const speedoBar = $("#speedoBar");
@@ -34,29 +33,29 @@
     setTimeout(() => {
       preloader.style.display = "none";
       document.body.classList.remove("no-scroll");
-    }, 750);
+    }, 900);
   };
 
   document.body.classList.add("no-scroll");
 
   const tick = setInterval(() => {
-    progress += Math.random() * 9 + 4;
+    progress += Math.random() * 6 + 3;
     if (progress >= 100) {
       progress = 100;
       clearInterval(tick);
-      setTimeout(finishPreloader, 420);
+      setTimeout(finishPreloader, 500);
     }
     if (speedoBar) {
       speedoBar.style.strokeDashoffset = CIRC * (1 - progress / 100);
     }
     if (preNum) preNum.textContent = toFa(Math.floor(progress));
-  }, 95);
+  }, 130);
 
-  setTimeout(finishPreloader, 4500);
-  window.addEventListener("load", () => setTimeout(finishPreloader, 1400));
+  setTimeout(finishPreloader, 5000);
+  window.addEventListener("load", () => setTimeout(finishPreloader, 1600));
 
   /* ============================================================
-     2. CUSTOM CURSOR
+     2. CUSTOM CURSOR (نرم‌تر)
      ============================================================ */
   const cursor = $("#cursor");
   const cursorDot = $("#cursorDot");
@@ -75,8 +74,9 @@
     });
 
     const renderCursor = () => {
-      cx += (mx - cx) * 0.16;
-      cy += (my - cy) * 0.16;
+      // نرم‌تر: 0.09 به جای 0.16
+      cx += (mx - cx) * 0.09;
+      cy += (my - cy) * 0.09;
       cursor.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
       requestAnimationFrame(renderCursor);
     };
@@ -92,7 +92,7 @@
   }
 
   /* ============================================================
-     3. SCROLL PROGRESS BAR
+     3. SCROLL PROGRESS
      ============================================================ */
   const progressBar = $("#progressBar");
   const updateProgress = () => {
@@ -103,7 +103,7 @@
   };
 
   /* ============================================================
-     4. HEADER STATE + TO-TOP BUTTON
+     4. HEADER STATE + TO-TOP
      ============================================================ */
   const header = $("#header");
   const toTop = $("#toTop");
@@ -173,7 +173,7 @@
   }
 
   /* ============================================================
-     6. REVEAL ON SCROLL
+     6. REVEAL ON SCROLL (نرم‌تر)
      ============================================================ */
   const revealEls = $$("[data-reveal]");
 
@@ -182,12 +182,13 @@
       (entries) => {
         entries.forEach((entry, i) => {
           if (!entry.isIntersecting) return;
-          entry.target.style.transitionDelay = i * 90 + "ms";
+          // تاخیر کمتر و یکنواخت‌تر
+          entry.target.style.transitionDelay = i * 70 + "ms";
           entry.target.classList.add("is-visible");
           revealObserver.unobserve(entry.target);
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
     revealEls.forEach((el) => revealObserver.observe(el));
   } else {
@@ -199,18 +200,19 @@
   }, 3000);
 
   /* ============================================================
-     7. ANIMATED COUNTERS
+     7. COUNTERS (نرم‌تر)
      ============================================================ */
   const counters = $$("[data-count]");
 
   const animateCount = (el) => {
     const target = parseInt(el.dataset.count, 10) || 0;
-    const duration = 1700;
+    const duration = 2000;
     const start = performance.now();
 
     const step = (now) => {
       const p = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
+      // ease-out نرم‌تر (quartic)
+      const eased = 1 - Math.pow(1 - p, 4);
       const value = Math.round(target * eased);
       el.textContent = value.toLocaleString("fa-IR");
       if (p < 1) requestAnimationFrame(step);
@@ -228,7 +230,7 @@
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.4 }
     );
     counters.forEach((c) => counterObserver.observe(c));
   } else {
@@ -238,29 +240,29 @@
   }
 
   /* ============================================================
-     8. 3D TILT ON CARDS
+     8. 3D TILT (نرم‌تر)
      ============================================================ */
   if (finePointer) {
     $$("[data-tilt]").forEach((card) => {
-      const MAX = 8;
+      const MAX = 5; // قبلاً 8 بود
 
       card.addEventListener("mousemove", (e) => {
         const r = card.getBoundingClientRect();
         const px = (e.clientX - r.left) / r.width - 0.5;
         const py = (e.clientY - r.top) / r.height - 0.5;
         card.style.transform =
-          `perspective(1000px) rotateX(${-py * MAX}deg) rotateY(${px * MAX}deg) translateY(-6px)`;
+          `perspective(1200px) rotateX(${-py * MAX}deg) rotateY(${px * MAX}deg) translateY(-4px)`;
       });
 
       card.addEventListener("mouseleave", () => {
         card.style.transform =
-          "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
+          "perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0)";
       });
     });
   }
 
   /* ============================================================
-     9. HERO CARD PARALLAX
+     9. HERO CARD PARALLAX (نرم‌تر)
      ============================================================ */
   const heroCard = $("#heroCard");
 
@@ -272,7 +274,7 @@
       const px = (e.clientX - r.left) / r.width - 0.5;
       const py = (e.clientY - r.top) / r.height - 0.5;
       heroCard.style.transform =
-        `rotateY(${px * 12}deg) rotateX(${-py * 12}deg) translateZ(0)`;
+        `rotateY(${px * 8}deg) rotateX(${-py * 8}deg) translateZ(0)`;
     });
 
     hero.addEventListener("mouseleave", () => {
@@ -281,7 +283,7 @@
   }
 
   /* ============================================================
-     10. MAGNETIC BUTTONS
+     10. MAGNETIC BUTTONS (نرم‌تر)
      ============================================================ */
   if (finePointer) {
     $$(".magnetic").forEach((btn) => {
@@ -289,7 +291,8 @@
         const r = btn.getBoundingClientRect();
         const x = e.clientX - r.left - r.width / 2;
         const y = e.clientY - r.top - r.height / 2;
-        btn.style.transform = `translate(${x * 0.28}px, ${y * 0.32}px)`;
+        // دامنه کمتر: 0.18 / 0.2
+        btn.style.transform = `translate(${x * 0.18}px, ${y * 0.2}px)`;
       });
 
       btn.addEventListener("mouseleave", () => {
